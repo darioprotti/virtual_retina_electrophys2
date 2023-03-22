@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Retinal Neurophysiology Simulation</title>
+
+  <!-- STYLESHEETS -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles1.css">
+  <link href="css/bootstrap-4.3.1.css" rel="stylesheet" type="text/css">
+  <!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+  <link href="css/jQueryAssets/jquery.ui.theme.min.css" rel="stylesheet" type="text/css">
+  <link href="css/bootstrap-4.3.1.css" rel="stylesheet" type="text/css">
+  <link href="css/jQueryAssets/jquery.ui.accordion.min.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/all.css">
+  <link rel="stylesheet" href="css/styles1.css">
+    
+  <style>
+    /* ---------- STIMULUS ---------- */
+   
+    #ARCurveGraph {
+      width: 96%;
+      height: auto;
+      margin: 10px 4% 0 0;
+    }
+    /* ---------- KNOBS ---------- */
+    canvas {
+      margin-top: 32px;
+      margin-left: 8px
+    }
+    #startStim {
+      margin-top: 20px
+    }
+
+    #clearData {
+      margin-top: 40px
+    }
+
+    #downloadData {
+      margin-top: 10px
+    }
+
+    input,
+    select {
+      text-align: center;
+    }
+
+    .svgContainer {
+      position: relative;
+    
+    }
+
+    .svgContainer:before {
+      content: "";
+      display: block;
+      padding-top: 70%;
+    }
+
+    .svgContainer>div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+
+    #nameSeed {
+      width: 200px
+    }
+
+    #initMessage {
+      font-size: 130%;
+      color: red
+    }
+
+    @media (min-width: 768px) {
+      .content {
+        padding: 75px 15px 0;
+      }
+
+      body {
+        background-position: 0 75px;
+      }
+    }
+
+    @media (max-width: 1200px) {
+      #topBanner {
+        background: none;
+      }
+    }
+
+    html {
+      position: relative;
+      min-height: 100%;
+    }
+
+    body {
+      margin-bottom: 60px;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background-color: #262626;
+      color: #E8E8E8;
+    }
+
+    .container .text-muted {
+      margin: 20px 0;
+    }
+
+    .footer>.container {
+      padding-right: 15px;
+      padding-left: 15px;
+      background-color: #262626;
+      line-height: 20px;
+      width: 100%;
+    }
+
+    input {
+      text-align: right;
+      padding-right: 5px
+    }
+
+    input[type='button']:disabled,
+    button:disabled {
+      background-color: #d3d3d3;
+    }
+
+    a.external:link {color: #0000ff; text-decoration: underline;font-size: 14pt; font-weight: bold; }
+    a.external:visited {color: #0000ff; text-decoration: underline;font-size: 14pt; font-weight: bold; }
+  </style>
+  
+</head>
+
+<body>
+
+  <div id="tabs">
+    <ul>
+      <li><a href="#tabs-1">Introduction</a></li>
+      <li><a href="#tabs-2">Experiments</a></li>
+      <li><a href="#tabs-3">About this program</a></li>
+    </ul>
+    <div id="tabs-1">
+        <br>
+     <sup></sup>      
+      <h1><p><strong>Biological membranes and excitability</strong></p></h1>
+      <br>
+      <p> Cell membranes are made up of a lipid bilayer and proteins and act as barriers and gatekeepers
+          of the intracellular environment. Cell membranes are semipermeable: gases and hydrophobic molecules
+          can cross membranes but highly charged molecules like ions (Na<sup>+</sup>, K<sup>+</sup>, Cl<sup>-</sup>,
+          etc) and large molecules rely on specific proteins embedded in the membrane for their transport. Membrane 
+          proteins are specific and selective for the molecules they transport and some of them require energy to 
+          move their substrates. </p>
+          <p> All cells have a membrane potential across their membrane. This transmembrane potential is determined
+           by the differential distribution of ions across the membrane and the relative permeability of the membrane
+          to ions, which is governed by the ion channels (proteins) embedded in the membrane. In resting conditions,
+          neuronal membranes are mainly permeable to K<sup>+</sup> ions, therefore resting membrane potential is close
+          to the equilibrium potential of K<sup>+</sup>. The equilibrium potential of individual ions can be determined
+          using the Nernst equation, which relates the voltage V across the membrane with the extracellular and intracellular
+          concentrations of the ion. </p> 
+          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+          &nbsp&nbsp&nbsp&nbspNernst equation <img src="img/visual/Nernst1.png"width="180" height="50"></a>
+          <p> where E is the voltage called equilibrium potential of the ion (N), R is the gas constant, T is 
+          the temperature, <i>z</i> is the valence, F is the Faraday constant and <i>N<sub>o</sub></i> and <i>N<sub>i</sub></i> 
+          are the extracellular and intracellular concentrations of the ion respectively. </p> 
+          <p> The membrane potential of a cell can be measured by inserting a microelectrode in a cell to measure
+          the voltage difference between the outside and inside of the cell. </p> 
+          <p> Neuronal membranes contain a specific set of ion channels (voltage-gated channels) that allows them
+          to transmit information by propagating a transient signal that consists of a change in membrane potential
+          called action potential. These signals can travel very fast from the soma to the axonal terminal and then
+          be passed on to other cells at the synapses. The generation of action potential results from rapid changes
+          in membrane permeability, from a K<sup>+</sup> selective condition to a Na<sup>+</sup> selective condition.
+          These permeability changes depend on the activation of voltage-gated ion channels that respond to membrane 
+          potential. </p>
+          <p> Our current understanding of the mechanisms involved in the initiation and generation of the action
+          potential arises from studies done by Hodgkin and Huxley in the late '40s and early '50s in the squid giant
+          axon. The large diameter of the squid giant axon (close to 1 mm) allowed for the insertion of metal 
+          electrodes as well as for exchange of intracellular content solution. Although vertebrate neurons have much
+          smaller diameter and most of them are myelinated, the biological bases of membrane potential and the mechanisms
+          underlying action potential generation are very similar. </p>
+          <p> The biophysical mechanisms involved in the generation of action potentials are well conserved from invertebrates to
+          mammals. In mammals, a great diversity of neurones with different morphology and signalling mechanisms evolved 
+          to support a rich complexity of behaviours. As such, different neuronal types have distinct properties and vary
+          in their sensitivity, the time course of their responses and other characteristics. In this practical class, you will
+          explore the underlying bases of membrane potential and get familiar with some neuronal signalling properties. </p>
+          <br>
+    </div>
+    <div id="tabs-2">
+
+      <div id="accordion">
+        <h3>Membrane Potential</h3>
+        
+        <div>
+        <p>
+        <span><font size="+2"><b><strong>Equilibrium and membrane potential calculator </b></strong></font></span><br><br>
+        <div class="row">
+          <div class="col" style="background-color:#aaa;">
+            <h2>Permeability <br> and <br> Temperature</h2><br>
+        
+            <p> <span>P<sub>Na</sub></span0>  <input id="PNa" value=".05" type="text" size="4"></p><br>
+            <p> <span>P<sub>K</sub></span0>   <input id="PK" value="1" type="text" size="4"></p><br>   
+            <p> <span>P<sub>Cl</sub></span0>  <input id="PCl" value=".45" type="text" size="4"></p><br>  <br> 
+            <p> <span>Temperature</span0>  <input id="Temp" value="25" type="text" size="4"></p><br>  <br> 
+            <button id="startStim" type="button">Calculate membrane potential <br> and <br> equilibrium potentials</button><br><br>
+          </div>
+          <div class="col" style="background-color:#bbb;">
+            <h2>Extracellular concentrations</h2></h2><br><br><br>
+            <p> <span>Na<sub><i>out</i></sub></span0>  <input id="Nao" value="" type="text" size="4"> mM</p><br>
+            <p> <span>K<sub><i>out</i></sub></span0>  <input id="Ko" value="" type="text" size="4"> mM</p><br>   
+            <p> <span>Cl<sub><i>out</i></sub></span0>  <input id="Clo" value="" type="text" size="4"> mM</p><br>
+              <button id="ClearEc" type="button">Clear [ ]o values </button><br><br><br>
+              <button id="InitEc" type="button">Initialise [ ]o values </button>
+          </div>
+          <div class="col" style="background-color:#bbb;">
+            <h2>Intracellular concentrations</h2></h2><br><br><br>
+            <p> <span>Na<sub><i>in</i></sub></span0>  <input id="Nai" value="" type="text" size="4"> mM</p><br>
+            <p> <span>K<sub><i>in</i></sub></span0>  <input id="Ki" value="" type="text" size="4"> mM</p><br>   
+            <p> <span>Cl<sub><i>in</i></sub></span0>  <input id="Cli" value="" type="text" size="4"> mM</p><br>
+            <button id="ClearIc" type="button">Clear [ ]i values</button><br><br><br>  
+            <button id="InitIc" type="button">Initialise [ ]o values</button>
+          </div>
+          <div class="col" style="background-color:#bbb;">
+            <h2>Calculations</h2></h2><br><br><br><br><br>
+            <p> <span>V<sub><i>m</i></sub></span0>  <input id="Em1" value="" readonly="readonly" size="4"> mV</p><br>
+            <p> <span>E<sub><i>Na</i></sub></span0>  <input id="ENa" value="" type="text" size="4"> mV</p><br>
+            <p> <span>E<sub><i>K</i></sub></span0>  <input id="EK" value="" type="text" size="4"> mV</p><br>   
+            <p> <span>E<sub><i>Cl</i></sub></span0>  <input id="ECl" value="" type="text" size="4"> mV</p><br>
+            <button id="ClearVm" type="button">Clear results</button>      
+          </div>
+          
+        </div>
+        </p>  
+        
+        <p>
+          <br>
+          <div class="col" style="background-color:#bbb;">
+            <p><br>
+            The following table contains the intracellular concentration of the critical ions involved in setting membrane
+            potential and generating action potentials.
+            Calculate the resting membrane potential for a mammalian neuron and for the squid giant axon.<br><br></p>
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<img src="img/visual/Table.png"width="720" height="200"></a>
+            <br><br><br>
+            </div>
+            <div class="col" style="background-color:#bbb;">
+            Calculate the resting membrane potential for this alien organism<br><br>
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<img src="img/visual/Alien.png"width="360" height="200"></a>
+            <br><br><br>
+            </div>
+        </div>
+        <h3>Action Potentials</h3>
+        
+        <div class="container-fluid">
+          <div class="row">
+            <p><span><font size="+2"><b><strong>Exploring the excitability properties of different neurons</b></strong></font></span><br><br></p>
+            <div class="col-lg-8">
+              <div class="svgContainer">
+                <div class="chart">
+                  <canvas id="myChart"></canvas>
+                </div>  
+              </div>
+            </div>
+            <div class="col-lg-4">
+              <div id="ColourContainer">
+                <h3>Select neuron</h3>
+                <select id="CellType" size="1">
+                  <option value="none" selected>---</option>
+                  <option value="CellA">Neuron A</option>
+                  <option value="CellB">Neuron B</option>
+                  <option value="CellC">Neuron C</option>
+            </select>
+                </div>
+                <br>
+              <div id="ColourContainer">
+                <br><h3>Current injection</h3>
+                <p> <span>Pulse delay</span0>  <input id="delay" value="5" type="text" size="4"> ms</p><br>
+                <p> <span>Pulse duration<sub><i></i></sub></span0>  <input id="duration" value="5" type="text" size="4"> ms</p><br>   
+                <p> <span>Total duration<sub><i></i></sub></span0>  <input id="totalduration" value="0" type="text" size="4"> ms</p><br>
+                <p> <span>Current amplitude</span0>  <input id="Icurrent" value="1" type="text" size="4"> nA</p><br>
+                <br>
+                </div>
+                <button id="InjectIm" type="button">Inject current</button>
+          </div>
+          <script>
+            var resistance = [.7];
+            var tau = [1];
+            var threshold = [1];
+            tau1=[1];
+            resistance1=[1];
+            threshold1 = [1];
+            var  totalduration1G=[1]; 
+            var APA = [-1.335,1.5,4.5,9,12,19.088,33.0588,46.8208,59.9248,71.7535,81.6325,88.9439,93.2304,94.2734,92.1274,87.1079,79.7399,70.6808,60.636,50.2822,40.2072,30.873,22.5991,15.5648,9.82475,5.33364,1.97437,-1.41384,-3.01068,-3.99494,-4.53044,-4.75751,-4.78909,-4.71069,-4.5827,-4.44429,-4.31783,-4.21338,-4.13261,-4.0721,-4.02591,-3.98734,-3.95013,-3.90906,-3.86029,-3.8013,-3.7308,-3.64846,-3.55467,-3.45031,-3.33654,-3.21465,-3,-2.75,-2.5,-2.25,-2,-1.75,-1.5,-1.25,-1,-0.75,-0.5,-0.25,0];
+            var APA1 = [-1.335,1.5,4.5,9,12,19.088,33.0588,46.8208,59.9248,71.7535,81.6325,88.9439,93.2304,94.2734,92.1274,87.1079,79.7399,70.6808,60.636,50.2822,40.2072,30.873,22.5991,15.5648,9.82475,5.33364,1.97437];
+            var APB = [-1.335,1.5,4.5,9,12,19.088,33.0588,46.8208,59.9248,71.7535,81.6325,88.9439,93.2304,94.2734,92.1274,87.1079,79.7399,70.6808,60.636,50.2822,40.2072,30.873,22.5991,15.5648,9.82475,5.33364,1.97437,-1.41384,-3.01068,-3.99494,-4.53044,-4.75751,-4.78909,-4.71069,-4.5827,-4.44429,-4.31783,-4.21338,-4.13261,-4.0721,-4.02591,-3.98734,-3.95013,-3.90906,-3.86029,-3.8013,-3.7308,-3.64846,-3.55467,-3.45031,-3.33654,-3.21465,-3.08591,-2.95156,-2.81269,-2.67026,-2.52511,-2.37791,-2.22923,-2.07952,-2.52511,-2.37791,-2.22923,-2.07952,-1.92914,-1.89834,-1.82732,-1.797621,-1.732507,-1.691003,-1.6435965,-1.59619,-1.5487835,-1.501377,-1.4539705,-1.406564,-1.3591575,-1.311751,-1.2643445,-1.216938,-1.1695315,-1.122125,-1.0747185,-1.027312,-0.9799055,-0.932499,-0.8850925,-0.837686,-0.7902795,-0.742873,-0.6954665,-0.64806,-0.6006535,-0.553247,-0.5058405,-0.458434,-0.4110275,-0.363621,-0.3162145,-0.268808,-0.2214015,-0.173995,-0.1265885,-0.079182,-0.0317755,0.015631,0.0630375,0.110444]
+            var APB1 = [0,-0.0366985,7.16396,13.9346,20.4674,27.2447,35.2957,40.0037,50.94,67.9704,85.2321,94.76,96.9129,95.2765,91.9757,88.0744,84.1188,80.3631,76.8935,73.7079,70.7631,67.9984,65.3448,62.7261,60.0534,57.2149,54.0515,50.3096,45.5282,38.7505,27.99,13.3362,3.17918];
+            var APC = [-1.335,1.5,4.5,9,12,19.088,33.0588,46.8208,59.9248,71.7535,81.6325,88.9439,93.2304,94.2734,92.1274,87.1079,79.7399,70.6808,60.636,50.2822,40.2072,30.873,22.5991,15.5648,9.82475,5.33364,1.97437,-1.41384,-3.01068,-3,-2.81,-2.62,-2.43,-2.24,-2.05,-1.86,-1.67,-1.48,-1.29,-1.1,-0.91,-0.72,-0.53,-0.34,-0.15,0.04];
+            var APC1 = [-1.335,1.5,4.5,9,12,19.088,33.0588,46.8208,59.9248,71.7535,81.6325,88.9439,93.2304,94.2734,92.1274,87.1079,79.7399,70.6808,60.636,50.2822,40.2072,30.873,22.5991,15.5648,9.82475,5.33364,1.97437];
+            var AP = [];
+            var AP1 = [];
+            var breakLength = [];
+            var index1 = [];
+            var numCycles = [];
+            var endFirstCycle = [];
+            var begSecondCycle = [];
+            var fraction = [];
+            var newAPl = [];
+            var gap = [];
+            var mP = [];
+            var finalScaling = [];
+
+            var select = document.querySelector('select');
+            //select.addEventListener('change', selectCellType);
+            
+        
+        
+            document.getElementById("InjectIm").addEventListener("click", generateVoltageTrace);
+            document.getElementById("InjectIm").addEventListener("click", myFunction);
+            document.getElementById("CellType").addEventListener('change',selectCellType);
+            document.getElementById("startStim").addEventListener('click',generateVoltageTrace);
+            document.getElementById("startStim").addEventListener('click',myFunction);
+            
+            function selectCellType() {
+           choice = select.value;
+          
+          index=0
+          if (choice === "CellA"){
+            tau=tau1*4.5;
+            resistance=resistance1*3.5;
+            threshold = threshold1*7 
+            breakLength = 32
+            AP = [];
+            for(index=0;index<APA.length;index++){
+              AP[index] = APA[index];
+            }
+            for(index=0;index<APA1.length;index++){
+              AP1[index] = APA1[index];
+            }
+            
+            }
+          else if (choice === "CellB"){
+            tau=tau1*8;
+            resistance=resistance1*1.75;
+            threshold = threshold1*10
+            breakLength = 118
+            AP = [];
+            for(index=0;index<APB.length;index++){
+              AP[index] = APB[index];
+            } 
+            for(index=0;index<APB1.length;index++){
+              AP1[index] = APB1[index];
+            }
+            }
+          else if (choice === "CellC"){
+            tau=tau1*2;
+            resistance=resistance1*12;
+            threshold = threshold1*7 
+            AP = [];
+            for(index=0;index<APC.length;index++){
+              AP[index] = APC[index];
+            } 
+            for(index=0;index<APC1.length;index++){
+              AP1[index] = APC1[index];
+            }
+          }
+          
+        }
+        selectCellType()
+        // //generate current
+        // for(index=0;index<50;index++){
+        //     current1[index] = 1.5;
+        //     }
+        // for(index=50;index>49 && index <150;index++){
+        //     current1[index] = 2.5;
+        //     }
+        // for(index=150;index>149 && index <500;index++){
+        //     current1[index] = 5;
+        //     }
+        
+            function generateVoltageTrace() {
+        
+        // generate Action potentials
+        var delay = document.getElementById('delay').value;
+        var duration = document.getElementById('duration').value;
+        var totalduration = document.getElementById('totalduration').value;
+        var Icurrent = document.getElementById('Icurrent').value;
+        
+        var delay1 = Number($("#delay").val())*10;
+        var duration1 = Number($("#duration").val())*10;
+        var totalduration1 = Number($("#totalduration").val())*10;
+        var Icurrent1 = Number($("#Icurrent").val());
+        totalduration1G=totalduration1
+        
+        var finalvoltage = Icurrent1*resistance
+        var current1 = [];
+        current1.length=totalduration1G;
+        //const maxVoltage = ['']
+        
+        //generate random noise for traces
+        var spikeTrace1 = [];
+        function randomNumber() {
+            for(index=0;index<totalduration1G;index++){
+                var num = Math.random() * 2 - 1;
+                spikeTrace1.push(num);
+            }
+        }
+                randomNumber();
+        
+          function getRndInteger(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) ) + min;
+                  }
+          
+           mP =  getRndInteger(66,71)      
+
+           debugger;
+  
+        //add -65 to random noise
+        
+        //add -65 to random noise
+        
+        var Vrest = [];
+        for(var i = 0; i < totalduration1G; i++){
+                Vrest[i] = -[mP];
+            }
+        var VrestN = [];
+            for(var i = 0; i < Vrest.length; i++){
+                VrestN.push(Vrest[i] + spikeTrace1[i]);
+            }
+        const voltageW = [];
+        current1.voltageW=totalduration1G;
+        index=0
+        var APl = AP.length;
+        var AP1l = AP1.length;
+        var finpulse = delay1+duration1;
+        
+        
+        
+        
+        //generate exponential response with time constant tau
+            for(index=0;index<delay1;index++){
+              voltageW[index]=0;
+            }
+            for(index=delay1;index>delay1-1 && index <delay1+duration1;index++){
+                voltageW[index]=0+(finalvoltage* ((1-Math.exp((-(index+1-delay1) / tau)))));
+            }
+            
+            let maxVoltage=voltageW[delay1+duration1-1]
+            for(index=delay1+duration1;index>delay1+duration1-1 && index <totalduration1;index++){
+                voltageW[index]=0+(maxVoltage * Math.exp(-(index-duration1) / tau)); 
+            }
+            
+        var firstCrossing = [];
+        var voltageW1 = [];
+        voltageW1=voltageW
+        
+        index=0
+
+            while (voltageW[index] < threshold) {
+  if (voltageW[index] > threshold+0.1) {
+    break;
+  }
+  firstCrossing = index;
+  index++;
+}
+
+index = 0
+
+numCycles = duration1/APl
+fraction = numCycles - Math.floor(numCycles)
+newAPl = APl * fraction
+
+if (fraction <1) {
+  endFirstCycle = delay1 +duration1
+} else {
+  endFirstCycle = firstCrossing + (APl * Math.floor(numCycles))
+}
+
+// code for pulses shorter than AP duration
+debugger;
+do
+if ((voltageW[index] > threshold) && duration1 < 35) {
+  index1=0
+  do {
+                voltageW[index]=finalvoltage+AP1[index1]
+                      index++;
+                      index1++;
+                 }
+            while (index1 < AP1l); 
+                } else {
+        index++;
+    }        
+   while (index < finpulse); 
+  
+
+index=0
+debugger;
+do   
+    if (voltageW[index] > threshold && duration1 > 35) {
+                index1=0
+            do {
+                voltageW[index]=finalvoltage+AP[index1]
+                      index++;
+                      index1++;
+                }
+            while (index1 < APl);
+            } 
+    else {
+        index++;
+    }        
+   while (index < endFirstCycle);
+index = endFirstCycle
+   
+debugger;
+// do   
+//     if (voltageW[index] > threshold && (finpulse - endFirstCycle) > 27 && (endFirstCycle+newAPl) < finpulse) {
+//                 index1=0
+//             do {
+//                 voltageW[index]=finalvoltage+AP[index1]
+//                       index++;
+//                       index1++;
+//                 }
+//             while (index1 < newAPl);
+//             } 
+//     else {
+//       voltageW[index]=voltageW1[index]
+//       index++;
+//     }        
+//    while (index < finpulse);
+
+
+for (index = endFirstCycle; (voltageW[index] > threshold && (finpulse - endFirstCycle) > 27 && (endFirstCycle+newAPl) < finpulse); index++) {
+  voltageW[index]=finalvoltage+AP[index1]
+                      index++;
+                      index1++;
+                      if (index === endFirstCycle+newAPl) break;
+}   
+    
+    do {
+      voltageW[index]=voltageW1[index]
+      index++;}
+      while (index < finpulse);     
+   while (index < finpulse);
+
+  
+
+        var scaling = [];
+        scaling = Math.max(voltageW);
+        const max = Math.max(...voltageW);
+        index=0
+        
+        finalScaling = [mP] -65;
+        if (max > 40) {
+          for(index=0;index<totalduration1G;index++){
+              voltageW[index]=voltageW[index]*113/max};
+        } else {
+          voltageW[index]=voltageW[index]
+        }
+        
+        var sum = [];
+            for(var i = 0; i < voltageW.length; i++){
+                sum.push(voltageW[i] + VrestN[i]+finalScaling);
+            }
+            window.sum2  = sum;
+        };
+        
+        
+        
+        
+        //plot Vm trace
+            function myFunction() { 
+            var data = [];
+            //var prev = [-65.01972130122218,-64.44510712713662,-64.42370094011481,-64.52102453675789,-64.97395802301494,-65.564024677659,-64.75868459560871,-64.06769243025008,-64.44861681838945,-64.58392107066027,-65.2057144432521,-64.35539364589506,-65.16566541987979,-65.01700525953643,-64.17628049993772,-64.1649438157976,-65.27491679856311,-65.43970729260978,-64.7032399787418,-65.27800923759854,-64.7777694706875,-65.6722619739192,-65.61668598226457,-65.8397233370897,-65.06248679982717,-64.84639048653908,-64.54815451568197,-64.49694659364667,-64.81810666715904,-65.26322745402669,-64.14954730322255,-65.48763395566358,-64.44713797090321,-64.51145095205858,-65.132054545611,-65.96783856530367,-64.71215395642096,-65.87001641057255,-64.79142542296303,-65.96978651563559,-65.65708572926708,-65.6976296766131,-64.90484940866945,-64.82403606538585,-64.27975135427164,-65.08160132241453,-64.31501615226867,-64.24392479388608,-65.98827094685538,-64.97060695056253,-62.947529291369044,-61.87365899730308,-59.88182982765715,-58.93455572107195,-57.89527991759218,-59.247498072313654,-55.96612405998086,-53.949535123011444,-48.323239963021564,-45.029595750486635,-39.402684170598086,-25.218546815419394,-12.080020006119675,1.1245669426485705,12.798283130853463,24.04561589702115,30.070086998085173,35.9859857342132,37.00417921300037,33.4904175770173,28.33176549353027,21.595131851022472,13.44569366611195,2.199415233560785,-8.620927277663043,-18.506330927137867,-26.782933256467913,-35.66148439350149,-42.5137361459795,-48.850937548862085,-53.35155486093208,-55.78428325408482,-58.59379561326658,-59.2834987637137,-60.68903416358057,-62.418256797536,-60.90723322650142,-61.524375934600855,-62.64287677714407,-61.10104009129607,-61.84612830857211,-61.5846645748111,-62.102732530817974,-60.82904808420058,-60.88851262811465,-61.530311670030194,-61.56396186200794,-60.61283908485295,-61.52875264066738,-61.504055995188246,-61.448633338795375,-61.12033082391925,-60.99306921502573,-59.59679000280762,-61.251421295770456,-60.26978889671251,-60.2778316628465,-60.29180098820426,-60.149714102144614,-59.591295074326766,-59.84265270815028,-59.253498943251074,-58.51642162285559,-58.45945516255611,-59.787615511772216,-58.43016022709313,-59.104210131098355,-58.90672179528357,-58.76350841154335,-59.03499027510395,-54.72740102563601,-59.61047458236035,-55.663690785564555,-52.732492844061554,-49.92901206002119,-46.33558041236468,-39.3141110828092,-24.379755272000317,-10.494568088920126,1.9140915327745631,13.661455137272739,23.817234252469277,30.072761892897404,36.09470917072804,36.65386891840507,33.66352878411301,28.64128687160644,21.838904637879097,11.864092597170071,1.7821275903786216,-8.269959729818524,-17.19490654644291,-27.343309173401664,-34.885124935249586,-43.3151753998475,-47.44303863288426,-51.66655856066146,-56.51817312859492,-58.57681139841266,-60.77474736122998,-60.332812116069604,-61.24159650418814,-61.71781665452107,-62.380979361092145,-62.17502902744134,-61.74365230375635,-61.42059603891931,-61.8042387907458,-61.43340133597911,-61.38971475679014,-60.333893640686135,-60.701630891991634,-61.76448266303933,-61.76402698122418,-59.982242823175156,-60.064464514226394,-60.44698454199501,-60.25454340179647,-60.07351577931294,-60.23132127291737,-59.90756878556546,-60.43279694182576,-59.912124464380746,-59.250097133372435,-60.70008456483227,-59.1372253431031,-59.905870820753165,-59.041092618241834,-59.48696082695092,-59.71112507640217,-59.02350576818371,-59.19237461654857,-59.22188261771727,-59.481124524248486,-58.46540447959378,-57.51526320679433,-64.38520216081865,-65.71815234467127,-65.28483665188904,-65.54547856887808,-65.30252629470512,-65.2987790490989,-64.65295451624436,-65.59372122768666,-64.73821318583494,-64.38366540888762,-64.82652822659203,-64.19470640736468,-65.66783615717084,-64.5122961123318,-64.78096067373448,-65.86336869291162,-65.68704933313242,-64.32333796192245,-65.76621642062563,-65.60380960232861,-64.03384013798457,-64.32195479502067,-64.74358851422114,-64.60505638675755,-64.19803751363399,-65.82744462179154,-65.718875210902,-65.42180010501237,-64.94488290206608,-64.12439207951877,-65.68493708613869,-65.25404778598752,-64.5671725695543,-64.07339072591893,-64.5783359880176,-65.57436725097186,-65.49179403503628,-64.40684524024695,-64.89442349736426,-65.51075439230718,-65.94590578509374,-65.2870559964477,-65.71343787371772,-65.3003434871044,-65.78280063358466,-65.89906980436892,-65.17441010771782,-64.05150937913116,-65.6598565464221,-65.4569852722748,-65.98649486563012,-65.12430706830074,-64.70556665463286,-65.92472172643932,-64.1602360338146,-64.91134703660562,-65.35073703440956,-65.90075281269381,-64.51237108321313,-64.10455029524907,-64.49296556255177,-65.67221328611188,-65.4178119532784,-65.35089917175472,-65.1912571188131,-65.81969853735264,-64.0473002094133,-65.2227174627092,-65.10549032375695,-64.16466903994463,-65.56184491409473,-65.30027543390118,-64.10435925096088,-64.69246124035969,-65.64643228708582,-64.13284936073721,-65.88898281966993,-64.63568823174997,-65.21062141124136,-64.32210657231946,-64.76068039471971,-64.00594431962352,-64.24542915720077,-65.2594677792734,-65.9860239628592,-64.44651279424485,-65.02598435081687,-65.24679735850033,-65.2742924092658,-64.17672137364416,-65.65250596965032,-64.07124466823007,-65.38114533789388,-65.25786020684303,-64.95269785097489,-64.22168130108672,-65.05506560450112,-64.97973582711514,-64.79486384972434,-65.82304857810973,-64.53888935606471,-64.81078834309349,-65.87857361443663,-64.78375576797598,-65.19895221042667,-65.97714900990115,-64.92221714783015,-65.59566289852538,-65.19297436114947,-65.56561055491336,-64.82359891546754,-64.38549388977772,-64.35662495121369,-65.23801028963197,-64.29764713886799,-64.70744082600646,-64.57160501716956,-64.07094576461519,-65.27547547545869,-65.35282850963696,-64.3295052389386,-65.59323008071424,-65.51809981798084,-65.60947007661514,-64.9658671542549,-65.36789395912606,-64.15811628154147,-65.76650103294709,-65.86818649713433,-65.68246122673347,-64.49303556175997,-64.87898407878797,-65.37928746340718,-64.58753098103134,-64.63197128042646,-64.77015768854771,-65.86138984206976,-65.5076726192408,-65.07465592698706,-65.26320836765017,-65.42337956844048,-64.45662598120977,-64.48267524088439,-65.27843538308372,-65.3794765909896,-65.8243801544457,-65.18037314527332,-64.31695063972018,-65.78155526104817,-64.21392222491883,-64.33493586415942,-64.32201435466864,-65.83527825121766,-64.31169125830911,-64.44731282099006,-64.3100226456669,-64.0916714866933,-64.74206124519328,-64.77082710705287,-65.95047039349707,-65.05764224789132,-65.34553094483165,-65.06856552102677,-64.72891532787457,-64.71251810967976,-65.70062252862839,-65.0438122814733,-64.13943703280312,-64.97599933360276,-64.14520871605278,-64.85595417391013,-65.74565783180995,-65.5184870815276,-64.93044600841193,-64.83037897855893,-65.66989011404794,-64.83318157989834,-64.19736329311912,-64.18841538949081,-64.5299716615439,-64.80567913960729,-65.23571675537653,-64.7500792974949,-65.93262339503106,-64.06232608910312,-65.97530628396213,-64.70697537187809,-65.45833494887515,-64.33128161234909,-64.08074464890628,-65.40579881124586,-64.83927841744215,-64.94294515268962,-64.62344559661162,-64.84846075987018,-64.96944846685481,-64.19107002519897,-64.86980200858498,-64.58245759985795,-64.0936661196357,-64.12433750797507,-64.86597166472029,-64.26483446436865,-65.04354114334578,-64.35972631955167,-64.33411109574513,-65.76663348724352,-65.05121929796249,-65.0815756161408,-65.03571403811307,-65.18244280826583,-65.12023678111991,-65.61432333905958,-65.24199148939985,-65.13567584848462,-64.52075011750172,-65.17135578960264,-64.72183455077341,-65.6650302676289,-65.57520204862102,-65.15001977938064,-64.65808154520268,-65.35955105073836,-65.99711680933336,-65.0978042754603,-64.33087095011656,-65.68096028450516,-65.46706087023117,-65.09561559637959,-65.87563342589915,-64.12735090813963,-64.19433640756226,-64.65529474178672,-64.26643357528852,-65.94740379671003,-65.82434921232496,-64.02740909462928,-64.84953916699902,-65.33723396443331,-64.12525340134708,-65.83278615933828,-65.68489007393859,-64.9399161986001,-65.80653841127662,-64.11012019349322,-65.9338524627265,-65.67992333936797,-64.90434940467243,-65.00125006300605,-65.34479221682366,-64.83622128424591,-64.02651542826723,-65.08287474788814,-64.91788315447793,-64.99401819786387,-65.06085456679598,-64.23299476982837,-64.34611337476936,-64.34990408768505,-64.6835702684954,-64.0620724078997,-64.18049056043945,-65.10246529985376,-65.86753450804403,-64.78423309928341,-65.68245157244488,-65.7718165683979,-65.5961956919647,-64.92950328475537,-65.37506319086097,-64.43058942435178,-64.13513745956861,-64.23965387883544,-64.3386173590225,-65.91673272910815,-65.58033945065223,-65.07858936960393,-65.69331850947194,-65.19929618686454,-65.26229974691174,-64.4016599761963,-65.47252659360346,-64.85485264889508,-64.89091053893657,-64.12192823083664,-65.6173798316902,-65.47971522619713,-65.21446893464072,-64.73577558269993,-64.34927842944703,-64.22928057588403,-65.94650287255055,-64.47330042060447,-64.81002035933773,-64.82798604923657,-65.43733447202011,-64.64859761020013,-65.20785128920762,-64.70920218838964,-65.56577015688057,-64.84074973426297,-65.78319413195054,-64.51506991527121,-65.56086215572027,-64.64549799703113,-64.74480313993999,-65.8476228431863,-64.56586765802538,-65.47445776376077,-64.14786765558699,-64.75758381065152,-65.67252555862333,-65.81977042370896,-65.34855212494645];
+        
+            for (var i=0;i<totalduration1G;i++) {
+              data.push({x: (i*0.1), y: sum2[i]});
+            }
+            
+            var delayBetweenPoints = 10;
+            var started = {};
+            var ctx2 = document.getElementById("myChart").getContext("2d");
+            var myChart = new Chart(ctx2, {
+              type: "line",
+              data: {
+                datasets: [
+                  {
+                    label: 'Membrane Potential (mV)',
+                    backgroundColor: "transparent",
+                    borderColor: "rgb(0, 0, 0)",
+                    borderWidth: 1.8,
+                    pointRadius: 0,
+                    data: data,
+                    fill: true,
+                    animation: (context) => {
+                      var delay = 0;
+                      var index = context.dataIndex;
+                      var chart = context.chart;
+                      if (!started[index]) {
+                        delay = index * delayBetweenPoints;
+                        started[index] = true;
+                      }
+                      var {x,y} = index > 0 ? chart.getDatasetMeta(0).data[index-1].getProps(['x','y'], true) : {x: 0, y: chart.scales.y.getPixelForValue(100)};
+                      
+                      return {
+                        x: {
+                          easing: "linear",
+                          duration: 100,
+                          from: x,
+                          delay
+                        },
+                        y: {
+                          easing: "linear",
+                          duration: delayBetweenPoints * 5,
+                          from: y,
+                          delay
+                        },
+                        skip: {
+                          type: 'boolean',
+                          duration: delayBetweenPoints,
+                          from: true,
+                          to: false,
+                          delay: delay
+                        }
+                      };
+                    }
+                  }
+                ]
+              },
+              options: {
+                scales: {
+                  x: {
+                    type: 'linear'
+                  }
+                }
+              },
+              yAxes: [{
+                                    display: true,
+                                    scaleLabel: {
+                                              display: true,
+                                              labelString: 'Voltage (mV)'
+                                                },
+                                    ticks: {
+                                        beginAtZero: true,
+                                        steps: 10,
+                                        min: 0, // minimum value
+                                        max: 10 // maximum value
+                                    }
+                                }],
+              plugins: [{
+                id: 'force_line_update',
+                beforeDatasetDraw(chart, ctx) {
+                  ctx.meta.dataset.points = ctx.meta.data;
+                }
+              }]
+            });
+          };
+            
+            </script>
+          </div>
+
+    
+ </div>
+ </div>
+</div>
+ <div id="tabs-3">
+ 
+  <br>
+      <p>This <i>Virtual Membranes Laboratory </i> was designed and developed by Dr Dario Protti, 
+        Neuroscience Theme, The University of Sydney.
+      </p>
+      <p>These simulations are designed to reproduce the behaviour of neuronal membranes and their
+        responses to current injections. The response properties are modelled on different types of
+        neurons such as pyramidal, cerebellar, hippocampal and other types of neurones.</p>
+      <p>Experiments in virtual environments allow students to recreate “real experiments” without requiring to 
+        carry out difficult surgeries and/or using sophisticated and expensive equipment necessary for technically
+        challenging experiments. These  experiments provide access to realistic data whilst avoiding 
+        to use animals for ethical reasons.
+        </p>
+        
+        
+      </p>  
+      </div>
+ 
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+  <script src="js/vendor/seedrandom.min.js"></script>
+  <script src="js/vendor/jquery-2.2.0.min.js"></script>
+  <script src="js/vendor/jquery-ui.min.js"></script>
+  <script src="js/vendor/jquery.ui.touch-punch.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0-beta/dist/chart.min.js"></script>
+
+
+  <!-- JAVASCRIPT -->
+  <script src="js/modernizr.js"></script>
+  <script src="js/bootstrap-4.3.1.js"></script>
+  <script src="js/vendor/jquery-2.2.0.min.js"></script>
+  <script src="js/vendor/jquery-ui.min.js"></script>
+  <script src="js/vendor/jquery.ui.touch-punch.min.js"></script>
+  <script src="js/vendor/jQuery.js"></script>
+  <script src="js/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
+  <script src="js/IndexFunctions.js"></script>
+  <script src="js/GHK.js"></script>
+
+</body>
+
+</html>

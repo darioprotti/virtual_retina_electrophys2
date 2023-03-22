@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name=author content="Dr. Dario A. Protti">
+  <title>Retinal Neurophysiology Simulation</title>
+
+  <!-- STYLESHEETS -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles1.css">
+  <link href="css/bootstrap-4.3.1.css" rel="stylesheet" type="text/css">
+  <link href="css/jQueryAssets/jquery.ui.theme.min.css" rel="stylesheet" type="text/css">
+  <link href="css/bootstrap-4.3.1.css" rel="stylesheet" type="text/css">
+  <link href="css/jQueryAssets/jquery.ui.accordion.min.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/all.css">
+  <link rel="stylesheet" href="css/styles1.css">
+  <link rel="stylesheet" href="css/blend.css">
+  <link rel="stylesheet" href="css/draggable.css">  
+  <script src="js/vendor/jquery-2.2.0.min.js"></script>
+  
+  <style>
+    /* ---------- STIMULUS ---------- */
+   
+    #stimulusMonitor {
+      width: 70%;
+      height: auto;
+      border: 24px solid black;
+      padding: 0;
+      margin: 0 15%;
+      background-color: #7f7f7f;
+    }
+
+    #controlBox {
+      width: 280px;
+      height: 200px;
+      background-color: #DFE0DD;
+      border-radius: 8px;
+      border: 1px solid;
+      margin: 20px auto;
+      vertical-align: top;
+    }
+
+    #ARCurveGraph {
+      width: 96%;
+      height: auto;
+      margin: 10px 4% 0 0;
+    }
+    /* ---------- KNOBS ---------- */
+    #directionContainer {
+      width: 144px;
+      height: 180px;
+      margin: 0 10px;
+      text-align: center;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    #directionContainer>h3 {
+      margin: 0 0 5px 0;
+    }
+
+    #contrastContainer>h3 {
+      margin: 0 0 5px 0;
+    }
+    #colourContainer>h3 {
+      margin: 0 0 5px 0;
+    }
+    #knobDiv {
+      background-image: url("img/visual/directionKnob.png");
+      width: 144px;
+      height: 144px;
+      padding: 0
+    }
+
+    .knob {
+      width: 80px;
+      height: 90px;
+      margin: 0 auto
+    }
+
+    canvas {
+      margin-top: 32px;
+      margin-left: 8px
+    }
+
+    #contrastContainer {
+      text-align: center;
+      display: inline-block;
+      vertical-align: middle;
+    }
+
+    #colourContainer {
+      text-align: center;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    #PrepBox {
+      width: 360px;
+      height: auto;
+      background-color:none;
+      vertical-align: top;
+    }
+    #electrodeContainer {
+      text-align: center;
+      display: inline-block;
+      vertical-align: top;
+    }
+    #EyeContainer {
+      margin-left: 0px;
+      height: auto;
+      vertical-align: -150px;
+    }
+    #container-fluid_Morph{
+      margin-left: 350px;
+      width: 600px;
+      height: auto;
+      background-color:none;
+      vertical-align: 0px;
+    }
+
+    #startStim {
+      margin-top: 20px
+    }
+
+    #clearData {
+      margin-top: 40px
+    }
+
+    #downloadData {
+      margin-top: 10px
+    }
+
+    input,
+    select {
+      text-align: center;
+    }
+
+    .svgContainer {
+      position: relative;
+    
+    }
+
+    .svgContainer:before {
+      content: "";
+      display: block;
+      padding-top: 70%;
+    }
+
+    .svgContainer>div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+
+    #nameSeed {
+      width: 200px
+    }
+
+    #initMessage {
+      font-size: 130%;
+      color: red
+    }
+
+    @media (min-width: 768px) {
+      .content {
+        padding: 75px 15px 0;
+      }
+
+      body {
+        background-position: 0 75px;
+      }
+    }
+
+    @media (max-width: 1200px) {
+      #topBanner {
+        background: none;
+      }
+    }
+
+    html {
+      position: relative;
+      min-height: 100%;
+    }
+
+    body {
+      margin-bottom: 60px;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background-color: #262626;
+      color: #E8E8E8;
+    }
+
+    .container .text-muted {
+      margin: 20px 0;
+    }
+
+    .footer>.container {
+      padding-right: 15px;
+      padding-left: 15px;
+      background-color: #262626;
+      line-height: 20px;
+      width: 100%;
+    }
+
+    input {
+      text-align: right;
+      padding-right: 5px
+    }
+
+    input[type='button']:disabled,
+    button:disabled {
+      background-color: #d3d3d3;
+    }
+
+    a.external:link {color: #0000ff; text-decoration: underline;font-size: 14pt; font-weight: bold; }
+    a.external:visited {color: #0000ff; text-decoration: underline;font-size: 14pt; font-weight: bold; }
+  </style>
+  <!-- <script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	  ga('create', 'UA-159598520-1', 'auto');
+	  ga('send', 'pageview');
+	</script> -->
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-159598520-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-159598520-1');
+</script>
+</head>
+
+<body>
+  <div id="tabs">
+    <ul>
+      <li><a href="#tabs-1">Introduction</a></li>
+      <li><a href="#tabs-2">Virtual Experiment</a></li>
+      <li><a href="#tabs-3">About this program</a></li>
+    </ul>
+    <div id="tabs-1">
+        <br>
+      <p><strong>Click on the image below to open the notes for this practical class in a new tab:</strong><p>
+
+        <a href="img/notes.pdf" download="Notes" target="_blank" ><img src="img/visual/RGC_RF.gif"width="130" height="90"></a>
+        
+        <iframe align="right" src="img/RF/Receptive_field/Receptive_field.html" height="360" width="480">  </iframe> 
+      <h1><p><strong>Retinal ganglion cells</strong></p></h1>
+      <br>
+      <p> The first steps of visual processing take place in the retina at the earliest stages of sensory
+          processing. Light is converted into a spatiotemporal pattern of neural signals, which are
+          transmitted to different brain areas via the axons of the retinal ganglion cells (RGCs) to
+          provide us with conscious vision as well as other non-conscious visual functions. In the retina,
+          the visual world is broken down by different neural circuits into several different channels
+          that carry information about distinct aspects of the environment, such as contrast, colour,
+          movement and light intensity among others. </p>
+          <p> Individual retinal neurons have distinct properties that determine the spatial and
+          temporal features of the signals they transmit. RGCs have a receptive field (RF) that, in simple
+          terms, can be defined as the area of the retina that will produce a change in firing rate upon
+          illumination (map of the region of the retina). Another way of defining the RF, which requires
+          a complete understanding of the stimulus to response relationship, is namely as a map
+           between the changes in spatiotemporal patterns of light and the RGC spikes. </p>
+          <p> The most common type of retinal receptive field comprises a central area, whose
+          stimulation produces increases in firing rate, and a peripheral area, whose stimulation leads
+          to reductions in firing rate (see animation on the right, click <strong>Play</strong> button to 
+          advance slides). Retinal neurons with RFs organised in a ‘centre-surround’ manner possess 
+          special properties, as typically they respond weakly to uniform illumination of the whole RF. 
+          RFs organised in such a manner are specialised to transmit information about local contrast 
+          in the image. </p>
+          <p> In the primate, each optic nerve contains over a million axons fibres and approximately 90% 
+          of them project to the dorsal lateral genicutate nucleus (dLGN). Although there are at least 
+          18 different types of RGCs, midget and parasol RGCs constitute the vast majority (~90%). Midget
+          cells project to the parvocellular layers of the dorsal lateral geniculate nucleus (dLGN) whilst
+          parasol cells project to the magnocellular layers of the dLGN, therefore these two RGC types are
+          critical for  visual information processing and conscious vision. Other well characterised 
+          primate RGCs are the small bistratified RGCs, which project to the koniocellular layers of the
+          dLGN and the intrinsically photosensitive retinal ganglion cells, which express melanopsin and
+          mediate pupillary reflex and provide inputs to the suprachiasmatic nucleus (biological rhythms).
+          More recently, a directionally-selective RGC with characteristics similar to those described 
+          in the rabbit and mouse retina, was also described in the primate retina. </p>
+          <p> Different types of RGCs are best tuned to a particular stimulus size and spatial frequency 
+          depending on their retinal location, they display specific contrast sensitivity properties (i.e. 
+          high or low), respond with a characteristic time course (i.e. transient or sustained) and
+          possess different chromatic sensitivity (i.e. Red-ON/Green-OFF, Blue-ON/Yellow-OFF) and 
+          adaptation properties. These properties are key for the visual information carried by each cell 
+          type. </p>
+          <br>
+    </div>
+    <div id="tabs-2">
+
+      <div id="accordion">
+        <h3>Instructions</h3>
+        
+        <div>
+          
+            <h4>Choose cell type</h4>
+        <p>
+          <select id="CellType" size="1">
+                <option value="none" selected>---</option>
+                <option value="CellA">Cell A</option>
+                <option value="CellB">Cell B</option>
+                <option value="CellC">Cell C</option>
+          </select>
+        </p>  
+        <p> Please enter your name in the following box and when you're
+                ready press "Initialise neuron": 
+          <input id="nameSeed" type="text">
+          <input id="submitSeed" type="submit" value="Initialise neuron">
+          <span id="initMessage"></span>
+        </p>
+
+        </div>
+        <h3>Simulate recordings</h3>
+        <div>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-lg-4">
+                <div class="svgContainer">
+                  <div id="stimulusMonitor"></div>
+                </div>
+              </div>
+              <div class="col-lg-4">
+                  <div id="PrepBox">
+                      <div id="EyeContainer">
+                          <svg id=RetinalPreparation_Recording width="400" height="300">
+                          <image xlink:href="img/equipment2.gif" height="300" width="400" />
+                          </svg>
+                        </div>
+                    </div>
+            </div>
+              <div class="col-lg-4">
+                <div style="margin:10px, 5%">
+                  <div class="oscilloscope"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="row"></div>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div id="vtabs1" >
+                    <ul class="test-red">
+                      <li class="dario-list">
+                        <a href="#vtabs1-1" id="ARTab" name="choiceT" selected>Area Response function</a>
+                      </li>
+                      <li class="dario-list">
+                        <a href="#vtabs1-2" id="CSTab">Contrast response</a>
+                      </li>
+                      <li class="dario-list">
+                        <a href="#vtabs1-3" id="TRTab">Temporal response</a>
+                      </li>
+                      <li class="dario-list">
+                        <a href="#vtabs1-4" id="ChrSTab" >Chromatic sensitivity</a>
+                      </li>
+                      <li class="dario-list">
+                        <a href="#vtabs1-5" id="DSTab">Direction Selectivity</a>
+                      </li>
+                      <li class="dario-list">
+                        <a href="#vtabs1-6" id="MTab">Morphological identification</a>
+                      </li>
+                    </ul>
+                    <div id="vtabs1-1">
+                      <div class="row">
+                      <div class="col-lg-8">
+                        <div class="svgContainer">
+                            <div id="ARTuningCurveGraph"></div>
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                        <h3>Choose condition</h3>
+                          <select id="condition" name="Dcondition" size="1">
+                            <option value="0" selected>---</option>
+                            <option value="Control">Control</option>
+                            <option value="DrugA">Drug A</option>
+                            <option value="DrugB">Drug B</option>
+                          </select>
+                          <br>
+                          <h3>Spot size (µm)</h3>
+                          <table width="" border="0">
+                          <tbody>
+                            <tr>
+                              <th scope="col">
+                                <table width="0">
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="30" id="RadioGroup2_0">
+                                        30</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="80" id="RadioGroup2_1">
+                                        80</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="150" id="RadioGroup2_2">
+                                        150</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="300" id="RadioGroup2_3">
+                                        300</label></td>
+                                  </tr>
+                                </table>
+                              </th>
+                              <th scope="col">
+                                <table width="0">
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="40" id="RadioGroup3_0">
+                                        40</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="100" id="RadioGroup3_1">
+                                        100</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="200" id="RadioGroup3_2">
+                                        200</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="400" id="RadioGroup3_3">
+                                        400</label></td>
+                                  </tr>
+                                </table>
+                              </th>
+                              <th scope="col">
+                                <table width="0">
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="60" id="RadioGroup4_0">
+                                        60</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="120" id="RadioGroup4_1">
+                                        120</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="250" id="RadioGroup4_2">
+                                        250</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="600" id="RadioGroup4_3">
+                                        600</label></td>
+                                  </tr>
+                                </table>
+                              </th>
+                            </tr>
+                          </tbody>
+                          </table>
+                      <div class="actions">
+                        <button id="startStim1" type="button">Start</button>
+                        <button id="clearData" type="button">Clear data</button>
+                        <br>
+                        <br>
+                        Number of trials: &nbsp;
+                        <input id="nrRepeatsAR" type="number" value="1" name="repeats" min="1" max="200">
+                        &nbsp;
+                        <br>
+                        <br>
+                        <button id="downloadDataAR" type="button">Download data</button>
+                      </div>
+                    </div> 
+                    </div>
+                  </div>
+                    <div id="vtabs1-2">
+                        <div class="row">
+                            <div class="col-lg-8">
+                              <div class="svgContainer">
+                            <div id="ContrastTuningCurveGraph"></div>
+                          </div>
+                        </div>
+                        <div class="col-lg-4">
+                          <div class="slidecontainer">
+                        <p>Contrast:</p>
+                        <form id="sliderData">
+                          <input type="range" min="0" max="13" value="0" class="slider" id="slider1">
+                           <span>1</span>
+                        </form>
+                      </div>
+                      <button id="startStim2" type="button">Start</button>
+                      <button id="clearDataCtst" type="button">Clear data</button>
+                      <br>
+                      <br>
+                      Number of trials: &nbsp;
+                        <input id="nrRepeatsCtst" type="number" value="1" name="repeats" min="1" max="200">
+                        &nbsp;
+                        <br>
+                        <br>
+                      <button id="downloadDataCtst" type="button">Download data</button>
+                    </div>
+                  </div>
+                </div>
+                    <div id="vtabs1-3">
+                      <div class="row">
+                            <div class="col-lg-8">
+                      <div class="svgContainer">
+                        <div id="TRTuningCurveGraph"></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div id="ColourContainer">
+                        <div class="col-lg-8">
+                          <div class="svgContainer">
+                        <div id="ContrastTuningCurveGraph"></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <button id="startStim4" type="button">Start</button>
+                        <br>
+                        <br>
+                        <button id="clearData4" type="button">Clear data</button>
+                        <br>
+                        <br>
+                        Number of trials: &nbsp;
+                        <input id="nrRepeatsTR" type="number" value="1" name="repeats" min="1" max="200">
+                        &nbsp;
+                        <br>
+                        <br>
+                        <button id="downloadDataTR" type="button">Download data</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                    </div>
+                    <div id="vtabs1-4">
+                        <div class="row">
+                            <div class="col-lg-8">
+                      <div class="svgContainer">
+                        <div id="CSTuningCurveGraph"></div>
+                      </div>
+                    </div>
+                    <div class="col-lg-4">
+                      <div id="ColourContainer">
+                        <h3>Chromatic stimulus</h3>
+                        <select id="colour" size="1">
+                          <option value="0" selected>---</option>
+                          <option value="10" >Achromatic</option>
+                          <option value="15">Isoluminant ML-cone isolating</option>
+                          <option value="25">Isoluminant S-cone isolating</option>
+                         </select>
+                        </br>
+                        </br>
+                        <button id="startStim3" type="button">Start</button>
+                        </br>
+                        <br>
+                        <br>
+                        <button id="clearData3" type="button">Clear data</button>
+                        <br>
+                        <br>
+                        Number of trials: &nbsp;
+                        <input id="nrRepeatsCS" type="number" value="1" name="repeats" min="1" max="200">
+                        &nbsp;
+                        <br>
+                        <br>
+                        <br>
+                        <button id="downloadDataCS" type="button">Download data</button>
+                       </div>
+                    </div>
+                  </div>
+                </div>
+                    <div id="vtabs1-5">
+                        <div class="row">
+                            <div class="col-lg-8">
+                     <div id="tuningCurveGraph"></div>
+                    </div>
+                     <div class="col-lg-4">
+                      <div id="controlBox">
+                        <div id="directionContainer">
+                          <h3>Direction</h3>
+                          <div class="knob" id="knobDiv">
+                            <input class="knob" id="directionDial" value="0" data-linecap="round">
+                          </div>
+                        </div>
+                        <div id="contrastContainer">
+                         </br>
+                          <button id="startStim" type="button">Start</button>
+                          </br>
+                          <br>
+                          <br>
+                          <button id="clearData1" type="button">Clear data</button>
+                        </div>
+                        <br>
+                      </br>
+                    </br>
+                        Number of trials: &nbsp;
+                        <input id="nrRepeats" type="number" value="1" name="repeats" min="1" max="200">
+                        &nbsp;
+                        <br>
+                        <br>
+                        <button id="downloadData" type="button">Download data</button>
+                        </p>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                      <div id="vtabs1-6">
+                          <div class="row">
+                              <div class="col-lg-8">
+                                  <h3>Morphological identification</h3>
+                                  <p>Wait for 15-20 seconds after pressing button to reveal cell morphology.
+                                  </p>
+                                  <div id="cf7" class="shadow">
+                                    <image class='opaque' src="img/paper2.gif" />
+                                    <image src="img/paper3.gif" />
+                                    <image src="img/paper4.gif" />
+                                    <image src="img/paper5.gif" />
+                                    </div> 
+                                    <div id="draggable1" class="ui-widget-contentDrag">
+                                          <p>Move electrode tip to location <span2 style="font-weight:bold; font-size: 125%">*</span2> in Ganglion Cell Layer and press button to inject dye</p>
+                                             <svg id= RetinalPreparation_Recording width ="240" height="180"> <image xlink:href="img/equipment3.gif" height="180" width="240"/>
+                                             </svg>
+                                       </div>
+                  </div>
+                  <div class="col-lg-4">
+                      <p id="cf7_controls">
+                          <button class="selected">Reverse image to retinal image</button>
+                          <button>Inject cell to reveal Cell A morphology</button>
+                          <button>Inject cell to reveal Cell B morphology</button>
+                          <button>Inject cell to reveal Cell C morphology</button>
+                          </p>  
+                  </div>
+                </div>
+                      </div>
+                    </div>
+          </div>
+          </div>
+          <div>
+          <div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+ </div>
+ </div>
+</div>
+ <div id="tabs-3">
+ 
+  <br>
+      <p>This virtual Retinal Electrophysiology Laboratory was designed and developed by Dr Dario Protti, 
+        Department of Physiology, The University of Sydney. It builds upon <a href="https://ilearn.med.monash.edu.au/physiology/Neurophysiology/visualNeuroscience.html" target="_blank" class="external">"Visual Neuroscience"</a> developed 
+        by Dr Mar Quiroga and Dr Nicholas Price, Monash University, under <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" class="external">CC-BY-NC 4.0</a>.
+      </p>
+      <p>This virtual Retinal Electrophysiology Laboratory is designed to reproduce, record and download responses
+         of different retinal ganglion cell (RGC) types to stimulation with a variety of visual stimuli for further
+        analyses. The response properties and morphology of RGCs simulated in this virtual
+        laboratory are modelled on those of old world primate retinas using algorithms that describe their physiological
+        responses.
+      </p>
+        <p>Experiments in virtual environments allow students to recreate “real experiments” without requiring to 
+        carry out difficult surgeries and/or using sophisticated and expensive equipment necessary for technically
+        challenging experiments. These  experiments provide access to realistic data whilst avoiding 
+        to use animals for ethical reasons.
+        </p>
+        <p> <strong><u>Acknowledgements:</u></strong></p>
+        <p>Primate retina photomicrograph by Dr Ulrike Grünert, Save Sight Institute, The University of Sydney.</p>
+        <p>Special thanks to: Drs Nicholas Price and Mar Quiroga for code sharing, Dr Mar Quiroga and Mr Danyi Zhu for
+           initial advice and Mr Zayn Buksh, The University of Sydney, for generous help with web design.
+      </p>
+        
+      </p>  
+      </div>
+ 
+  <script src="js/vendor/seedrandom.min.js"></script>
+  <script src="js/vendor/jquery-2.2.0.min.js"></script>
+  <script src="js/vendor/jquery-ui.min.js"></script>
+  <script src="js/vendor/jquery.ui.touch-punch.min.js"></script>
+  
+
+  <!-- JAVASCRIPT -->
+  <script src="js/blend.js"></script>
+  <script src="js/TweenMax.min.js"></script>
+  <script src="js/Draggable.min.js"></script>
+  <script src="js/draggable.js"></script>
+  <script src="js/d3.js"></script>
+  <script src="js/d3CheckBox.js"></script>
+  <script src="js/modernizr.js"></script>
+  <script src="js/bootstrap-4.3.1.js"></script>
+  <script src="js/vendor/jquery-2.2.0.min.js"></script>
+  <script src="js/vendor/jquery-ui.min.js"></script>
+  <script src="js/vendor/jquery.ui.touch-punch.min.js"></script>
+  <script src="js/vendor/jQuery.js"></script>
+  <script src="js/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
+  <script src="js/vendor/d3.v3.min.js"></script>
+  <script src="js/vendor/jquery.knob.js"></script>
+  <script src="js/browserAudioSupport.js"></script>
+  <script src="js/spikeTrace.js"></script>
+  <script src="js/spikeAudio.js"></script>
+  <script src="js/intro.js"></script>
+  <script src="js/D3/ClearDataAR.js"></script>
+  <script src="js/D3/visualFunctions.js"></script>
+  <script src="js/D3/AreaResponseFunction.js"></script>
+  <script src="js/D3/ContrastFunction.js"></script>
+  <script src="js/D3/CSFunction.js"></script>
+  <script src="js/D3/TemporalRespFunction.js"></script>
+  <script src="js/D3/directionTuning.js"></script>
+  <script src="js/D3/ClearDataAR.js"></script>
+  <script src="js/D3/ClearDataContrast.js"></script>
+  <script src="js/D3/ClearDataCS.js"></script>
+  <script src="js/D3/ClearDataTemporalResp.js"></script>
+  <script src="js/D3/ARCurve.js"></script>
+  <script src="js/D3/ContrastCurve.js"></script>
+  <script src="js/D3/CSCurve.js"></script>
+  <script src="js/D3/TemporalRespCurve.js"></script>
+  <script src="js/D3/tuningCurve.js"></script>
+  <!-- <script src="js/D3/allVisualFunctions.js"></script> -->
+  <script src="js/spikeTrace.js"></script>
+  <script src="js/IndexFunctions.js"></script>
+  <script src="js/bessel.js"></script>
+  <script src="js/D3/d3-scale.js"></script>
+</body>
+</html>

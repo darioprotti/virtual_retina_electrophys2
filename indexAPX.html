@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Retinal Neurophysiology Simulation</title>
+
+  <!-- STYLESHEETS -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles1.css">
+  <link href="css/bootstrap-4.3.1.css" rel="stylesheet" type="text/css">
+  <!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+  <link href="css/jQueryAssets/jquery.ui.theme.min.css" rel="stylesheet" type="text/css">
+  <link href="css/bootstrap-4.3.1.css" rel="stylesheet" type="text/css">
+  <link href="css/jQueryAssets/jquery.ui.accordion.min.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/all.css">
+  <link rel="stylesheet" href="css/styles1.css">
+  <link rel="stylesheet" href="css/blend.css">
+  <link rel="stylesheet" href="css/draggable.css">  
+  <script src="js/vendor/jquery-2.2.0.min.js"></script>
+  
+  <style>
+    /* ---------- STIMULUS ---------- */
+   
+    #ARCurveGraph {
+      width: 96%;
+      height: auto;
+      margin: 10px 4% 0 0;
+    }
+    /* ---------- KNOBS ---------- */
+    canvas {
+      margin-top: 32px;
+      margin-left: 8px
+    }
+    #startStim {
+      margin-top: 20px
+    }
+
+    #clearData {
+      margin-top: 40px
+    }
+
+    #downloadData {
+      margin-top: 10px
+    }
+
+    input,
+    select {
+      text-align: center;
+    }
+
+    .svgContainer {
+      position: relative;
+    
+    }
+
+    .svgContainer:before {
+      content: "";
+      display: block;
+      padding-top: 70%;
+    }
+
+    .svgContainer>div {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+    }
+
+    #nameSeed {
+      width: 200px
+    }
+
+    #initMessage {
+      font-size: 130%;
+      color: red
+    }
+
+    @media (min-width: 768px) {
+      .content {
+        padding: 75px 15px 0;
+      }
+
+      body {
+        background-position: 0 75px;
+      }
+    }
+
+    @media (max-width: 1200px) {
+      #topBanner {
+        background: none;
+      }
+    }
+
+    html {
+      position: relative;
+      min-height: 100%;
+    }
+
+    body {
+      margin-bottom: 60px;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 100px;
+      background-color: #262626;
+      color: #E8E8E8;
+    }
+
+    .container .text-muted {
+      margin: 20px 0;
+    }
+
+    .footer>.container {
+      padding-right: 15px;
+      padding-left: 15px;
+      background-color: #262626;
+      line-height: 20px;
+      width: 100%;
+    }
+
+    input {
+      text-align: right;
+      padding-right: 5px
+    }
+
+    input[type='button']:disabled,
+    button:disabled {
+      background-color: #d3d3d3;
+    }
+
+    a.external:link {color: #0000ff; text-decoration: underline;font-size: 14pt; font-weight: bold; }
+    a.external:visited {color: #0000ff; text-decoration: underline;font-size: 14pt; font-weight: bold; }
+  </style>
+  
+</head>
+
+<body>
+
+  <div id="tabs">
+    <ul>
+      <li><a href="#tabs-1">Introduction</a></li>
+      <li><a href="#tabs-2">Experiments</a></li>
+      <li><a href="#tabs-3">About this program</a></li>
+    </ul>
+    <div id="tabs-1">
+        <br>
+     <sup></sup>      
+      <h1><p><strong>Biological membranes and excitability</strong></p></h1>
+      <br>
+      <p> Cell membranes are made up of a lipid bilayer and proteins and act as barriers and gatekeepers
+          of the intracellular environment. Cell membranes are semipermeable: gases and hydrophobic molecules
+          can cross membranes but highly charged molecules like ions (Na<sup>+</sup>, K<sup>+</sup>, Cl<sup>-</sup>,
+          etc) and large molecules rely on specific proteins embedded in the membrane for their transport. Membrane 
+          proteins are specific and selective for the molecules they transport and some of them require energy to 
+          move their substrates. </p>
+          <p> All cells have a membrane potential across their membrane. This transmembrane potential is determined
+           by the differential distribution of ions across the membrane and the relative permeability of the membrane
+          to ions, which is governed by the ion channels (proteins) embedded in the membrane. In resting conditions,
+          neuronal membranes are mainly permeable to K<sup>+</sup> ions, therefore resting membrane potential is close
+          to the equilibrium potential of K<sup>+</sup>. The equilibrium potential of individual ions can be determined
+          using the Nernst equation, which relates the voltage V across the membrane with the extracellular and intracellular
+          concentrations of the ion. </p> 
+          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+          &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+          &nbsp&nbsp&nbsp&nbspNernst equation <a href="img/notes.pdf" download="Notes" target="_blank" ><img src="img/visual/Nernst1.png"width="180" height="50"></a>
+          <p> where E is the voltage called equilibrium potential of the ion (N), R is the gas constant, T is 
+          the temperature, z is the valence, F is the Faraday constant and No and Ni are the extracellular and 
+          intracellular concentrations of the ion respectively. </p> 
+          <p> The membrane potential of a cell can be measured by inserting a microelectrode in a cell to measure
+          the voltage difference between the outside and inside of the cell. </p> 
+          <p> Neuronal membranes contain a specific set of ion channels (voltage-gated channels) that allows them
+          to transmit information by propagating a transient signal that consists of a change in membrane potential
+          called action potential. These signals can travel very fast from the soma to the axonal terminal and then
+          be passed on to other cells at the synapses. The generation of action potential results from rapid changes
+          in membrane permeability, from a K<sup>+</sup> selective condition to a Na<sup>+</sup> selective condition.
+          These permeability changes depend on the activation of voltage-gated ion channels that respond to membrane 
+          potential. </p>
+          <p> Our current understanding of the mechanisms involved in the initiation and generation of the action
+          potential arises from studies done by Hodgkin and Huxley in the late '40s and early '50s in the squid giant
+          axon. The large diameter of the squid giant axon (close to 1 mm) allowed for the insertion of metal 
+          electrodes as well as for exchange of intracellular content solution. Although vertebrate neurons have much
+          smaller diameter and most of them are myelinated, the mechanisms underlying action potential generation are
+          very similar. </p>
+
+          <br>
+    </div>
+    <div id="tabs-2">
+
+      <div id="accordion">
+        <h3>Instructions</h3>
+        
+        <div>
+        
+        <p> Please enter your name in the following box and when you're
+                ready press "Initialise neuron": 
+          <input id="nameSeed" type="text">
+          <input id="submitSeed" type="submit" value="Initialise neuron">
+          <span id="initMessage"></span>
+        </p>  
+            
+        <p>
+        <span><font size="+2"><b><strong>Equilibrium and membrane potential calculator </b></strong></font></span><br><br>
+
+
+
+          <select id="CellType" size="1">
+                <option value="none" selected>---</option>
+                <option value="CellA">Cell A</option>
+                <option value="CellB">Cell B</option>
+                <option value="CellC">Cell C</option>
+          </select>
+        </p>  
+        
+        </p>
+        <image xlink:href="img/visual/RGC_RF.gif"width="720" height="200">
+
+        <a href="img/notes.pdf" download="Notes" target="_blank" ><img src="img/visual/Alien.png"width="360" height="200"></a>
+        </div>
+        <h3>Simulate recordings</h3>
+        <div>
+          <div class="container-fluid">
+           <div class="col-lg-4">
+                <!-- <div style="margin:10px, 5%">
+                  <div class="oscilloscope"></div>
+                </div> -->
+              </div>
+            
+            <div class="row"></div>
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-lg-12">
+                  <div id="vtabs1" >
+                    <!-- <ul class="test-red">
+                      <li class="dario-list">
+                        <a href="#vtabs1-1" id="ARTab" name="choiceT" selected>Area Response function</a>
+                      </li>
+                    </ul> -->
+                    <!-- <div id="vtabs1-1"> -->
+                      <div class="row">
+                      <!-- <div class="col-lg-8">
+                        <div class="svgContainer">
+                            <div id="ARTuningCurveGraph"></div>
+                          </div>
+                        </div> -->
+                        <div class="col-lg-8">
+                        <h3>Choose condition</h3>
+                          <select id="condition" name="Dcondition" size="1">
+                            <option value="0" selected>---</option>
+                            <option value="Control">Control</option>
+                            <option value="DrugA">Drug A</option>
+                            <option value="DrugB">Drug B</option>
+                          </select>
+                          <br>
+                          <h3>Spot size (µm)</h3>
+                          <table width="" border="0">
+                          <tbody>
+                            <tr>
+                              <th scope="col">
+                                <table width="0">
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="30" id="RadioGroup2_0">
+                                        30</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="80" id="RadioGroup2_1">
+                                        80</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="150" id="RadioGroup2_2">
+                                        150</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="300" id="RadioGroup2_3">
+                                        300</label></td>
+                                  </tr>
+                                </table>
+                              </th>
+                              <th scope="col">
+                                <table width="0">
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="40" id="RadioGroup3_0">
+                                        40</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="100" id="RadioGroup3_1">
+                                        100</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="200" id="RadioGroup3_2">
+                                        200</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="400" id="RadioGroup3_3">
+                                        400</label></td>
+                                  </tr>
+                                </table>
+                              </th>
+                              <th scope="col">
+                                <table width="0">
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="60" id="RadioGroup4_0">
+                                        60</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="120" id="RadioGroup4_1">
+                                        120</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="250" id="RadioGroup4_2">
+                                        250</label></td>
+                                  </tr>
+                                  <tr>
+                                    <td><label>
+                                        <input type="radio" name="choice" value="600" id="RadioGroup4_3">
+                                        600</label></td>
+                                  </tr>
+                                </table>
+                              </th>
+                            </tr>
+                          </tbody>
+                          </table>
+                      <div class="actions">
+                        <button id="startStim1" type="button">Start</button>
+                        <button id="clearData" type="button">Clear data</button>
+                        <br>
+                        <br>
+                        Number of trials: &nbsp;
+                        <input id="nrRepeatsAR" type="number" value="1" name="repeats" min="1" max="200">
+                        &nbsp;
+                        <br>
+                        <br>
+                        <button id="downloadDataAR" type="button">Download data</button><br>
+                        </div>
+                    </div> 
+                    </div>
+                  <!-- </div> -->
+                    
+
+                    </div>
+          </div>
+          </div>
+          <div>
+          <div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+ </div>
+ </div>
+</div>
+ <div id="tabs-3">
+ 
+  <br>
+      <p>This virtual <i>Pasive and Active Membranes Laboratory </i> was designed and developed by Dr Dario Protti, 
+        Neuroscience Theme, The University of Sydney.
+      </p>
+      <p>This virtual <i>Pasive and Active Membranes Laboratory </i>is designed to reproduce the behaviour of biological
+         membranes and their responses to current injections. The response properties are modelled on different types of
+          neurons such as  pyramidal, cerebellar and hippocampal neurones.</p>
+        <p>Experiments in virtual environments allow students to recreate “real experiments” without requiring to 
+        carry out difficult surgeries and/or using sophisticated and expensive equipment necessary for technically
+        challenging experiments. These  experiments provide access to realistic data whilst avoiding 
+        to use animals for ethical reasons.
+        </p>
+        
+        
+      </p>  
+      </div>
+ 
+  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
+  <script src="js/vendor/seedrandom.min.js"></script>
+  <script src="js/vendor/jquery-2.2.0.min.js"></script>
+  <script src="js/vendor/jquery-ui.min.js"></script>
+  <script src="js/vendor/jquery.ui.touch-punch.min.js"></script>
+  
+
+  <!-- JAVASCRIPT -->
+  <script src="js/blend.js"></script>
+  <script src="js/TweenMax.min.js"></script>
+  <script src="js/Draggable.min.js"></script>
+  <script src="js/draggable.js"></script>
+  <script src="js/d3.js"></script>
+  <script src="js/d3CheckBox.js"></script>
+  <script src="js/modernizr.js"></script>
+  <script src="js/bootstrap-4.3.1.js"></script>
+  <script src="js/vendor/jquery-2.2.0.min.js"></script>
+  <script src="js/vendor/jquery-ui.min.js"></script>
+  <script src="js/vendor/jquery.ui.touch-punch.min.js"></script>
+  <script src="js/vendor/jQuery.js"></script>
+  <script src="js/vendor/jquery-ui-1.12.1/jquery-ui.js"></script>
+  <script src="js/vendor/d3.v3.min.js"></script>
+  <script src="js/vendor/jquery.knob.js"></script>
+  <script src="js/browserAudioSupport.js"></script>
+  <script src="js/spikeTrace.js"></script>
+  <script src="js/spikeAudio.js"></script>
+  <!-- <script src="js/intro.js"></script> -->
+  <script src="js/D3/ClearDataAR.js"></script>
+  <script src="js/D3/visualFunctions.js"></script>
+  <script src="js/D3/AreaResponseFunction.js"></script>
+  <script src="js/D3/ContrastFunction.js"></script>
+  <script src="js/D3/CSFunction.js"></script>
+  <script src="js/D3/TemporalRespFunction.js"></script>
+  <script src="js/D3/directionTuning.js"></script>
+  <script src="js/D3/ClearDataAR.js"></script>
+  <script src="js/D3/ClearDataContrast.js"></script>
+  <script src="js/D3/ClearDataCS.js"></script>
+  <script src="js/D3/ClearDataTemporalResp.js"></script>
+  <script src="js/D3/ARCurve.js"></script>
+  <script src="js/D3/ContrastCurve.js"></script>
+  <script src="js/D3/CSCurve.js"></script>
+  <script src="js/D3/TemporalRespCurve.js"></script>
+  <script src="js/D3/tuningCurve.js"></script>
+  <script src="js/spikeTrace.js"></script>
+  <script src="js/IndexFunctions.js"></script>
+  <script src="js/bessel.js"></script>
+  <script src="js/D3/d3-scale.js"></script>
+
+
+  <!-- <script>
+    $(function () {
+      $("#accordion").accordion({
+        collapsible: true
+      });
+    });
+
+    // $(function () {
+    //   $("#Tabs1").tabs({
+    //     collapsible: true
+    //   });
+    // });
+
+    // $(function () {
+    //   $("#tabs").tabs({
+    //       collapsible: true
+    //   });
+    // });
+
+    $(function() {
+  $("#tabs").tabs(); 
+  $("#vtabs1").tabs().addClass("ui-tabs-vertical ui-helper-clearfix");
+  $("#vtabs1 li").removeClass("ui-corner-top").addClass("ui-corner-left");
+  
+
+  $("#vtabs1").tabs().addClass("ui-tabs-vertical"); // <-use your own selector here...
+  $(".ui-tabs-vertical .ui-tabs-nav").removeClass("ui-tabs-nav").addClass("ui-tabs-nav-vert")
+});
+
+    $(function () {
+      $("#draggable").draggable();
+    });
+
+    $(function () {
+      $("#draggable1").draggable();
+    });
+
+
+  </script> -->
+
+</body>
+
+</html>

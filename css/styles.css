@@ -1,0 +1,77 @@
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+table {
+	font-size: 1em;
+}
+
+.ui-draggable, .ui-droppable {
+	background-position: top;
+}
+
+.ui-widget-content{
+	background: none;
+}
+.test-red {
+	background: none;
+	background: #1c94c4;
+	border:  #1c94c4;
+}
+
+.dario-list {
+	font-size: .8em;
+}
+
+#draggable { width: 150px; height: 150px; padding: 0.5em; }
+
+ul.dario-list > li {
+	font-size: .5em;
+}
+.svgContainer {
+	width: 100%;
+}
+
+.svgContainer1 {
+	width: 100%;
+}
+
+
+/*
+ul
+	li
+	li
+
+*/
+
+/*
+	ID such as <p id="x"> always takes precedence
+	Class is less strong than ID
+
+	Example
+	=======
+	You have 10 divs
+	Every div information box has green background and normal size text, so you add class <p class="background">
+	.background {
+		background-color: green;
+		font-size: 12px
+	}
+
+	For the fifth one you need red background what you can add is <p class="background red-background">
+
+	.red-background {
+		background-color: red;
+	}
+
+	OR
+
+	For something that is important, especially if you want to target with JS, use an ID -
+	but IDs should only be used once
+
+	<div id="x">
+
+	#x {
+		// some rules here
+	}
+
+	 */

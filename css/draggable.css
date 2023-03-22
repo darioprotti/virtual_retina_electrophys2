@@ -1,0 +1,12 @@
+.ui-draggable, .ui-droppable {
+	background-position: top;
+}
+.ui-draggable1, .ui-droppable {
+	background-position: top;
+}
+.ui-widget-contentDrag{
+	background: none;
+}
+#draggable { width: 150px; height: 150px; padding: 0.5em; }
+
+#draggable1 { width: 175px; height: 125px; padding: 0.5em; }
